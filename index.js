@@ -1,4 +1,5 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
+const { ObjectId } = require("mongodb"); // Import ObjectId from mongodb library
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -39,8 +40,16 @@ async function run() {
 
     app.post("/blogs", async (req, res) => {
       const blog = req.body;
-      console.log(blog);
       const result = await blogCollection.insertOne(blog);
+      res.send(result);
+    });
+
+    app.delete("/blog/:id", async (req, res) => {
+      const id = req.params.id;
+      //   console.log(" deleted id ", id);
+      const query = { _id: new ObjectId(id) };
+      const result = await blogCollection.deleteOne(query);
+      //   console.log(result);
       res.send(result);
     });
 
