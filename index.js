@@ -24,8 +24,24 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    const blogCollection = client.db("BlogDB").collection("blogs");
+
     app.get("/", (req, res) => {
       res.send("Doodle Blog Server Running");
+    });
+
+    app.get("/blogs", async (req, res) => {
+      const query = {};
+      const cursor = blogCollection.find(query);
+      const blogs = await cursor.toArray();
+      res.send(blogs);
+    });
+
+    app.post("/blogs", async (req, res) => {
+      const blog = req.body;
+      console.log(blog);
+      const result = await blogCollection.insertOne(blog);
+      res.send(result);
     });
 
     app.listen(port, () => {
