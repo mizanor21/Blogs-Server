@@ -26,6 +26,7 @@ async function run() {
     await client.connect();
 
     const blogCollection = client.db("BlogDB").collection("blogs");
+    const CommentsCollection = client.db("BlogDB").collection("comments");
 
     app.get("/", (req, res) => {
       res.send("Doodle Blog Server Running");
@@ -41,6 +42,19 @@ async function run() {
     app.post("/blogs", async (req, res) => {
       const blog = req.body;
       const result = await blogCollection.insertOne(blog);
+      res.send(result);
+    });
+
+    app.get("/comments", async (req, res) => {
+      const query = {};
+      const cursor = CommentsCollection.find(query);
+      const comments = await cursor.toArray();
+      res.send(comments);
+    });
+
+    app.post("/comments", async (req, res) => {
+      const blog = req.body;
+      const result = await CommentsCollection.insertOne(blog);
       res.send(result);
     });
 
